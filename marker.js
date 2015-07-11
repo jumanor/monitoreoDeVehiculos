@@ -10,7 +10,7 @@ function cMarker(map,id,lat,lon){
   		position:new google.maps.LatLng(this.lat,this.lon),
 		map:this.map,
 		title:this.id,
-		//icon: 'beachflag.png'
+		icon: 'vehiculos.gif'
   	});
 	this.marker.setMap(this.map);
   }//////////////////////////////////////////

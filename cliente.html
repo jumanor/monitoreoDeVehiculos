@@ -4,34 +4,26 @@
     <script type="text/javascript">
 	var SOCKET=null;
 	var ID=null;
-	var REINICIO=false;
-
+	/////////////////////////////////////
 	function  conectarse(){
 	    	SOCKET = io.connect("http://127.0.0.1:9095");
 		SOCKET.on("connect",function(){
 			document.getElementById("idEstado").innerHTML="CONECTADO...";
 
-			SOCKET.emit("loginCliente",null,function(data){
-				
-		    		ID=data.id;	
-				document.getElementById("idSocket").innerHTML=ID;
-			});
+			
 		});
 		SOCKET.on("disconnect",function(){
 			document.getElementById("idEstado").innerHTML="DESCONECTADO...";
-			REINICIO=true;
+			document.getElementById("idFormulario2").style.display="none";//OCULTAMOS FORM2
+			document.getElementById("idFormulario1").style.display="block";//MOSTRAMOS FORM1
+			document.getElementById("idSocket").innerHTML="";
 			
 		});
-		
+		document.getElementById("idFormulario2").style.display="none";//OCULTAMOS FORM2
 	    	
 	}////////////////////////////////////
 	function enviarPosicion(){
 
-		if(REINICIO==true){
-			alert("REFRESQUE EL NAVEGADOR");
-			return;	
-		}
-		
 		var data={};
 		data.lat=document.getElementById("idLat").value;//51.508742;
 		data.lon=document.getElementById("idLon").value;//-0.120850;
@@ -41,14 +33,39 @@
 
 		alert("ENVIADO");
 	}////////////////////////////////////
-	
+	function enviarIdentificador(){
+		var data={};
+		data.id=document.getElementById("idIdenficador").value;
+		SOCKET.emit("loginCliente",data,function(data){//{estado,id}
+				
+		    		
+				if(data.estado===0){
+					alert("Existe otro usuario con el Identificador");
+				}
+				else{
+					ID=data.id;	
+					document.getElementById("idSocket").innerHTML=ID;
+					document.getElementById("idFormulario2").style.display="block";//MOSTRAMOS FORM2
+					document.getElementById("idFormulario1").style.display="none";//OCULTAMOS FORM1
+				}
+		});
+	}
 </script>
 </head>
 <body onload="conectarse();">
 	<div id="idEstado"></div>
 	<div id="idSocket"></div>
-	<input id="idLat" type="text" value="51.508742"></input>
-	<input id="idLon" type="text" value="-0.120850"></input>
-	<button onclick="enviarPosicion();">ENVIAR POSICION</button>	
+	
+	<div id="idFormulario1">
+		<div>INGRESE UN IDENTIFICADOR:</div>
+		<input id="idIdenficador" type="text" value="jumanor"></input>
+		<button onclick="enviarIdentificador();">ENVIAR IDENTIFICADOR</button>
+	</div>
+
+	<div id="idFormulario2">
+		<input id="idLat" type="text" value="51.508742"></input>
+		<input id="idLon" type="text" value="-0.120850"></input>
+		<button onclick="enviarPosicion();">ENVIAR POSICION</button>	
+	</div>
 </body>
 </html>
