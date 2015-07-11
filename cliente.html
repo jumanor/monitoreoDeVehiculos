@@ -1,0 +1,54 @@
+<html>
+<head>
+    <script src="http://127.0.0.1:9095/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+	var SOCKET=null;
+	var ID=null;
+	var REINICIO=false;
+
+	function  conectarse(){
+	    	SOCKET = io.connect("http://127.0.0.1:9095");
+		SOCKET.on("connect",function(){
+			document.getElementById("idEstado").innerHTML="CONECTADO...";
+
+			SOCKET.emit("loginCliente",null,function(data){
+				
+		    		ID=data.id;	
+				document.getElementById("idSocket").innerHTML=ID;
+			});
+		});
+		SOCKET.on("disconnect",function(){
+			document.getElementById("idEstado").innerHTML="DESCONECTADO...";
+			REINICIO=true;
+			
+		});
+		
+	    	
+	}////////////////////////////////////
+	function enviarPosicion(){
+
+		if(REINICIO==true){
+			alert("REFRESQUE EL NAVEGADOR");
+			return;	
+		}
+		
+		var data={};
+		data.lat=document.getElementById("idLat").value;//51.508742;
+		data.lon=document.getElementById("idLon").value;//-0.120850;
+		data.id=ID;
+
+		SOCKET.emit("posicionClientes",data);
+
+		alert("ENVIADO");
+	}////////////////////////////////////
+	
+</script>
+</head>
+<body onload="conectarse();">
+	<div id="idEstado"></div>
+	<div id="idSocket"></div>
+	<input id="idLat" type="text" value="51.508742"></input>
+	<input id="idLon" type="text" value="-0.120850"></input>
+	<button onclick="enviarPosicion();">ENVIAR POSICION</button>	
+</body>
+</html>

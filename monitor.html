@@ -1,0 +1,90 @@
+<html>
+<head>
+    <script src="marker.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+    <script src="http://127.0.0.1:9095/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+
+   	var SOCKET=null;
+	var MAP=null; 
+	var MARCADORES=[];
+	var REINICIO=false;
+
+	   function  conectarse(){
+	    	SOCKET = io.connect("http://127.0.0.1:9095");
+		SOCKET.on("connect",function(){
+			document.getElementById("idEstado").innerHTML="CONECTADO...";
+
+			SOCKET.emit("loginMonitor",{monitor:"monitor"},function(data){
+				document.getElementById("idSocket").innerHTML=data.id;
+
+			});
+			
+		});
+		SOCKET.on("disconnect",function(){
+			document.getElementById("idEstado").innerHTML="DESCONECTADO...";
+			REINICIO=true;
+		});
+
+		iniciarMapa();
+
+	    	SOCKET.on("monitorPrincipal",function(data){//{id,lat,lon}
+			if(REINICIO===true){
+				alert("REFRESQUE EL NAVEGADOR");
+				return;	
+			}
+			console.log(data);
+	    		var index=buscar(data);
+			if(index===-1){//ES NUEVO
+				nuevoPosicion(data);
+			}
+			else{//REGISTRADO
+				actualizarPosicion(index,data);
+			}
+
+	    	});
+	
+	    }
+
+	function iniciarMapa(){
+		var mapProp = {
+		    center:new google.maps.LatLng(51.508742,-0.120850),
+		    zoom:10,
+		    mapTypeId:google.maps.MapTypeId.ROADMAP
+		  };
+		 MAP=new google.maps.Map(document.getElementById("idGoogleMap"),mapProp);
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	function buscar(data){
+		var index=-1;		
+		var n=MARCADORES.length;
+		for(var i=0;i<n;i++){
+			if(MARCADORES[i].getId()==data.id){
+				index=i;
+				break;
+			}
+		}			
+		return index;			
+	}	
+	function nuevoPosicion(data){
+		var marca=new cMarker(MAP,data.id,data.lat,data.lon);
+		marca.dibujar();
+		MARCADORES.push(marca);
+		
+	}
+	function actualizarPosicion(index,data){
+		var marca=MARCADORES[index];
+		marca.remover();	
+		marca.update(data.lat,data.lon);
+		marca.dibujar();
+	}
+    </script>
+</head>
+<body onload="conectarse();">
+<div id="idEstado"></div>
+<div id="idSocket"></div>
+<div id="idGoogleMap" style="width:500px;height:380px;"></div>
+
+
+</body>
+</html>
