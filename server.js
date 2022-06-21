@@ -1,4 +1,4 @@
-var IPADDRESS="127.0.0.1";
+var IPADDRESS="0.0.0.0";
 var PORT=9095
 var express = require('express');
 var bodyParser = require('body-parser');
