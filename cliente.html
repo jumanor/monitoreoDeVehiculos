@@ -8,12 +8,12 @@
 	function  conectarse(){
 	    	SOCKET = io.connect("http://127.0.0.1:9095");
 		SOCKET.on("connect",function(){
-			document.getElementById("idEstado").innerHTML="CONECTADO...";
+			document.getElementById("idEstado").innerHTML="SERVER: "+SOCKET.io.opts.host+" ESTADO: CONECTADO...";
 
 			
 		});
 		SOCKET.on("disconnect",function(){
-			document.getElementById("idEstado").innerHTML="DESCONECTADO...";
+			document.getElementById("idEstado").innerHTML="SERVER: "+SOCKET.io.opts.host+" ESTADO: DESCONECTADO...";
 			document.getElementById("idFormulario2").style.display="none";//OCULTAMOS FORM2
 			document.getElementById("idFormulario1").style.display="block";//MOSTRAMOS FORM1
 			document.getElementById("idSocket").innerHTML="";
