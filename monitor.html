@@ -12,7 +12,7 @@
 	   function  conectarse(){
 	    	SOCKET = io.connect("http://127.0.0.1:9095");
 		SOCKET.on("connect",function(){
-			document.getElementById("idEstado").innerHTML="SERVER: "+SOCKET.io.opts.host+" ESTADO: CONECTADO...";
+			document.getElementById("idEstado").innerHTML="SERVER: "+SOCKET.io.opts.host+":"+SOCKET.io.opts.port+" ESTADO: CONECTADO...";
 
 			SOCKET.emit("loginMonitor",{monitor:"monitor"},function(data){
 				document.getElementById("idSocket").innerHTML=data.id;
@@ -21,7 +21,7 @@
 			
 		});
 		SOCKET.on("disconnect",function(){
-			document.getElementById("idEstado").innerHTML="SERVER: "+SOCKET.io.opts.host+" ESTADO: DESCONECTADO...";
+			document.getElementById("idEstado").innerHTML="SERVER: "+SOCKET.io.opts.host+":"+SOCKET.io.opts.port+" ESTADO: DESCONECTADO...";
 			eliminarMarcadores();
 		});
 

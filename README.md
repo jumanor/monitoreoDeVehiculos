@@ -10,6 +10,7 @@ Cada vehiculo tiene un GPS que envia informacion a una central que permite ver e
 
 **INSTALACIÓN SERVIDOR**
 * El Servidor Node esta configurado para realizar CROSSDOMAIN.
+* Instalar node@10.24.1
 * Ejecutar "npm install" (para descargar los modulos necesarios).
 * Ejecutar "node server.js"
 
